@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wabi Sanji meme layer</title>
+<!-- OBS browser source: 1920x1080, transparent, above the game. Served by `wabisanji serve`.
+     Tick "Control audio via OBS" so clip audio is its own fader in the mixer.
+     Placement: ?x=0.5&y=0.42 is the meme's centre as a fraction of the canvas.
+     Move it with the query string if it covers the facecam or the vocab column.
+     Clip volume: ?volume=0.8 (0 to 1; default 1, the clips are already levelled). -->
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: transparent;
+  }
+  .meme {
+    position: absolute;
+    max-width: 560px;
+    max-height: 460px;
+    /* No frame: many memes have transparent edges. drop-shadow follows the alpha. */
+    filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.55));
+    transform: translate(-50%, -50%);
+    animation: pop-in 520ms cubic-bezier(.2, 1.6, .4, 1) both;
+  }
+  .meme.leaving { animation: pop-out 380ms ease-in both; }
+  /* Sound bites: the quote as a speech pill instead of a picture */
+  .meme.caption {
+    max-width: 900px;
+    padding: 14px 28px;
+    border-radius: 14px;
+    background: rgba(43, 47, 85, 0.92);
+    color: #f2ecdc;
+    font: 800 46px/1.15 "Segoe UI", "Noto Sans JP", sans-serif;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+  }
+  @keyframes pop-in {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.2) rotate(-8deg); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0); }
+  }
+  @keyframes pop-out {
+    from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    to   { opacity: 0; transform: translate(-50%, -50%) scale(0.6) rotate(6deg); }
+  }
+</style>
+</head>
+<body>
+<script>
+  const POLL_MS = 300;
+  const SHOW_MS = 4800;       // images and GIFs
+  const MAX_CLIP_MS = 12000;  // clips play to the end, but never longer than this
+  const params = new URLSearchParams(location.search);
+  const X = parseFloat(params.get("x") ?? "0.5");
+  const Y = parseFloat(params.get("y") ?? "0.42");
+  const VOLUME = Math.min(1, Math.max(0, parseFloat(params.get("volume") ?? "1")));
+  const IS_CLIP = /\.(mp4|webm|mov|m4v)$/i;
+
+  let seq = null;   // null until the first poll: memes from before a reload don't replay
+  const queue = [];
+  let playing = false;
+
+  function play() {
+    if (playing || !queue.length) return;
+    playing = true;
+    const m = queue.shift();
+    if (m.kind === "sound") return playSound(m);
+    const clip = IS_CLIP.test(m.url);
+    const el = clip ? document.createElement("video") : new Image();
+    el.className = "meme";
+    el.style.left = `${X * 100}%`;
+    el.style.top = `${Y * 100}%`;
+
+    let left = false;
+    const done = () => { el.remove(); playing = false; play(); };
+    const leave = () => {
+      if (left) return;
+      left = true;
+      el.classList.add("leaving");
+      el.addEventListener("animationend", done, { once: true });
+    };
+    el.onerror = done;
+
+    if (clip) {
+      el.playsInline = true;
+      el.volume = VOLUME;
+      el.src = m.url;
+      el.onended = leave;
+      el.oncanplay = () => {
+        el.oncanplay = null;
+        document.body.appendChild(el);
+        // OBS's browser allows sound without a click; a normal browser tab may not
+        el.play().catch(() => { el.muted = true; el.play().catch(done); });
+        setTimeout(leave, MAX_CLIP_MS);
+      };
+    } else {
+      // A fresh query string restarts GIFs that were shown before
+      el.src = `${m.url}?n=${m.seq}`;
+      el.onload = () => {
+        document.body.appendChild(el);
+        setTimeout(leave, SHOW_MS);
+      };
+    }
+  }
+
+  function playSound(m) {
+    // Sound effects (vine boom) show nothing; quotes show their caption while they play
+    const audio = new Audio(m.url);
+    audio.volume = VOLUME;
+    let pill = null;
+    let finished = false;
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      if (!pill) { playing = false; play(); return; }
+      pill.classList.add("leaving");
+      pill.addEventListener("animationend", () => { pill.remove(); playing = false; play(); },
+                            { once: true });
+    };
+    audio.onerror = done;
+    audio.onended = done;
+    audio.oncanplay = () => {
+      audio.oncanplay = null;
+      if (m.caption) {
+        pill = document.createElement("div");
+        pill.className = "meme caption";
+        pill.textContent = m.caption;
+        pill.style.left = `${X * 100}%`;
+        pill.style.top = `${Y * 100}%`;
+        document.body.appendChild(pill);
+      }
+      audio.play().catch(done);
+      setTimeout(() => { if (!audio.ended) { audio.pause(); done(); } }, MAX_CLIP_MS);
+    };
+  }
+
+  async function poll() {
+    try {
+      const url = seq === null ? "/api/live/memes" : `/api/live/memes?since=${seq}`;
+      const r = await fetch(url, { cache: "no-store" });
+      if (r.ok) {
+        const data = await r.json();
+        if (seq !== null && data.seq < seq) seq = 0;   // server restarted: counter reset
+        else {
+          queue.push(...data.memes);
+          seq = data.seq;
+          play();
+        }
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    setTimeout(poll, POLL_MS);
+  }
+
+  poll();
+</script>
+</body>
+</html>

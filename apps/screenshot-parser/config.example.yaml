@@ -1,0 +1,80 @@
+# Wabi Sanji screenshot parser configuration
+
+# Directory to watch for new game screenshots
+screenshot_dir: "C:/RetroArch/screenshots"
+
+# Also scanned by `wabisanji pending` / `/translate`: OBS's screenshot folder
+# (its recording path), for PC games that RetroArch's F8 can't reach.
+extra_screenshot_dirs:
+  - 'C:/Users/you/Videos'
+file_patterns:
+  - "*.png"
+  - "*.jpg"
+  - "*.jpeg"
+
+# SQLite capture log (relative to this app's folder)
+database_path: "data/wabisanji.db"
+
+# vision | manga-ocr | hybrid
+ocr_method: "hybrid"
+
+# Local Ollama server (https://ollama.com) — no API key needed.
+ollama:
+  url: "http://localhost:11434"
+  # Vision-capable model used for all analysis. qwen3-vl:8b (6GB) handles
+  # dialogue well; a bigger model like qwen3.6:27b (17GB) also reads menus,
+  # battle screens, and HUD text reliably and segments vocab better.
+  model: "qwen3.6:27b"
+  # Seconds per request. First call after a cold start loads the model
+  # into VRAM and can take a while.
+  timeout: 300
+
+anki:
+  url: "http://127.0.0.1:8765"
+  # Base deck; cards are routed into ::Speech, ::Menu, and ::Pokemon subdecks
+  deck: "WabiSanji"
+  note_type: "WabiSanji Vocab"
+  # Push new vocabulary to Anki automatically after each screenshot
+  auto_sync: true
+  tag: "wabisanji"
+
+# Stream mode (`wabisanji serve`): overlay, reader page and JSON API.
+# AnkiConnect owns 8765, so this uses 8770.
+stream:
+  port: 8770
+  obs:
+    host: "localhost"
+    port: 4455
+    password_env: "OBS_WS_PASSWORD"   # read from env; never put the password in yaml
+    source: "Game Capture"            # OBS source to screenshot
+    only_scenes: ["Gameplay"]         # skip capture on BRB/Starting/Ending; [] = always
+  capture:
+    enabled: true
+    interval_ms: 500                  # how often to grab a frame
+    settle_ms: 350                    # box must be still this long before saving
+    change_threshold: 6.0             # mean abs diff (0-255) on the downscaled crop
+    dup_hash_distance: 6              # dHash Hamming distance; below = same box, skip
+    min_ink: 0.005                    # fraction of dark pixels in crop; 0 disables check
+    max_ink: 0.25
+    max_per_minute: 20                # flood guard for cutscenes
+    prefix: "obs-"
+    region: [0.0, 0.70, 1.0, 0.30]    # default dialogue box: x, y, w, h as frame fractions
+    regions:                          # per-game overrides, keyed by source name
+      "Pokemon LeafGreen": [0.0, 0.70, 1.0, 0.30]
+  live_ocr: "manga-ocr"               # manga-ocr | none
+  hotkeys:
+    scan: "<ctrl>+<alt>+s"
+    toggle_overlay: "<ctrl>+<alt>+o"
+  # ARIA (`wabisanji listen` + `/aria watch`): docs/aria-setup.md
+  live:
+    mic: null                         # name substring or index; null = Windows default input
+    model: "base.en"                  # CPU only; try small.en if the CPU keeps up
+    cpu_threads: 4
+    wake_words: ["aria", "arya", "ariya", "ariah", "aaria", "area"]
+    memes_dir: ""   # folder for the meme clips, or set WABISANJI_MEMES
+    memes_index: "../../content/stream/memes.yaml"
+    meme_gap_s: 20                    # between any two memes
+    claude_meme_gap_s: 60             # Claude's picks wait this long after any meme
+    transcript_batch_s: 45            # how often Claude gets new speech for meme picks
+    speaker_bot: "ws://127.0.0.1:7580/"
+    voice: "ARIA"                     # Speaker.bot alias (ElevenLabs Jessica)

@@ -1,0 +1,46 @@
+[project]
+name = "wabisanji-post"
+version = "0.1.0"
+description = "Post-stream pipeline: stream recordings to segments, transcripts, Shorts, YouTube episodes and social posts."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "typer>=0.12",
+    "rich>=13.7",
+    "pydantic>=2.8",
+    "pyyaml>=6.0",
+    "pillow>=10.4",
+    "numpy>=1.26",
+    "requests>=2.32",
+    "rapidfuzz>=3.6",           # transcript and vocab matching
+    "opencv-python-headless>=4.9,<5",  # facecam detection (Haar cascades left in 5.0), thumbnail frames
+    "faster-whisper>=1.0",      # transcription (CTranslate2)
+    "yt-dlp>=2025.1",           # Twitch VOD playlists for offset sync
+    "tzdata; sys_platform == 'win32'",  # zoneinfo names on Windows
+]
+
+[project.optional-dependencies]
+# Background removal for thumbnail reaction cutouts.
+cutout = ["rembg>=2.0", "onnxruntime>=1.18"]
+# CUDA libraries for faster-whisper on NVIDIA GPUs (Windows/Linux). Without them it runs on the CPU.
+gpu = [
+    "nvidia-cublas-cu12; sys_platform == 'win32' or sys_platform == 'linux'",
+    "nvidia-cudnn-cu12>=9; sys_platform == 'win32' or sys_platform == 'linux'",
+]
+
+[project.scripts]
+wabisanji-post = "wabisanji_post.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wabisanji_post"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,246 @@
+# Shorts layouts: where the game and facecam sit in the 1920x1080 OBS scenes, and where
+# they go in the 1080x1920 Short. Measured 2026-10-05 from full-res frames of
+# "2026-10-05 10-37-11.mkv" (Japanese scene at 00:41:30 / 00:44:30, Alchemy Factory at
+# 01:05:18 / 02:08:20). crop = [x, y, w, h] in 1920x1080 REFERENCE pixels, whatever the recording's
+# size: OBS records 2560x1440 from 2026-10-18_2, and render scales each crop to the real frame
+# (media.to_source), so a 2K Short is cropped at full resolution. Measure new boxes from a 2K frame
+# at 0.75x (or from a 960 px `stream-frames --at` still at 2x).
+#
+# Output: blurred, darkened game fills the frame; game stacked on top, facecam below.
+# Shorts UI covers roughly the top 120 px and the bottom 380 px; faces stay above y 1540.
+# The twitch.tv/WabiSanji badge (badge.py, 496x152) goes top centre at y 24 unless a layout
+# sets `badge: { y, x }` or `badge: false`. Its corners stay clear of the Shorts back/search icons.
+# `thumb: { crop }` is the background of the 1280x720 episode thumbnail (stream/thumbnail.py);
+# without it the whole frame is used (full-screen games). `hide` boxes (chat overlays: viewer names,
+# swearing) are blurred out of the thumbnail first.
+
+japanese:
+  # Game capture is 1600x900 at (228, 89); the dialogue box frame hangs to y 1007.
+  # x 336 clears the 340 px vocab column; x 1546 stops before most of the chat overlay
+  # (x >= 1455, only while chat is active) and the facecam (x >= 1410, y >= 780).
+  game: { crop: [336, 89, 1210, 920], width: 1080, y: 300 }
+  # Background-removed facecam over the game, bottom right. Kept inside the game capture
+  # (x <= 1828, y <= 990): outside it the canvas is black and showed as an L behind the streamer.
+  cam: { crop: [1400, 740, 428, 250], width: 860, y: 1140 }
+  thumb: { crop: [340, 89, 1488, 837], hide: [[1440, 89, 480, 991]] }   # the game capture right of the vocab column; chat at x >= 1455
+  cards: { y: 40 }              # vocab word cards, top band (230 px tall)
+  badge: false                  # the word card holds the top band for most of the clip
+  # Captions sit just under the card, over the top of the game: the dialogue box is at
+  # the bottom of the game and the cam below must stay clear.
+  captions: { bottom: 430 }
+
+# Japanese scene with a 4:3 game capture (2026-10-12): game 1102x826 at (395, 87), Anki window
+# top right (x >= 1550, y <= 410), pet cam below it, background-removed streamer bottom right
+# (x 1410-1810, y >= 720) over the background art, chat line at y ~1060. The BoF4 dialogue box
+# moves between the top and the bottom of the game, so captions go between the game and the cam.
+japanese_43:
+  game: { crop: [395, 87, 1102, 826], width: 1080, y: 290 }
+  cam: { crop: [1400, 720, 440, 340], width: 640, y: 1240, auto: true, region: [0.65, 0.6, 1.0, 1.0] }
+  thumb: { crop: [395, 87, 1102, 826] }
+  cards: { y: 40 }
+  badge: false
+  captions: { bottom: 1225 }
+
+# japanese_43 with the cam crop starting right of the game capture (2026-10-19: game x 394-1500, y 88-916; the
+# BoF4 dialogue portrait reaches x ~1440, y 680-860, so the x 1400 cam crop showed a slice of it beside the streamer).
+# The streamer x ~1460-1800, face y ~744-940. Fixed crop (no auto), moved up so the chin stays above the Shorts UI.
+japanese_43_cam_right:
+  game: { crop: [395, 87, 1102, 826], width: 1080, y: 290 }
+  cam: { crop: [1500, 730, 400, 330], width: 640, y: 1200 }
+  thumb: { crop: [395, 87, 1102, 826] }
+  cards: { y: 40 }
+  badge: false
+  captions: { bottom: 1190 }
+
+gaming:
+  # Alchemy Factory full screen. Skip the HUD's right edge, the chat (bottom left,
+  # x up to ~560, grows upward as messages arrive) and most of the facecam (x >= 1330, y >= 740).
+  game: { crop: [570, 0, 940, 840], width: 1080, y: 200 }
+  # Wide enough for the streamer leaning right; only a sliver of the HUD buttons (x >= 1680, y >= 900).
+  cam: { crop: [1310, 730, 400, 260], width: 860, y: 1180, auto: true }   # auto: follow the detected face (backlog scenes vary); crop = fallback
+  thumb: { hide: [[0, 420, 640, 660]] }   # chat, bottom left (Galactic Racer 2026-10-14 had it there too)
+  # Captions along the bottom of the game (factory floor), clear of the streamer's face.
+  captions: { bottom: 1150 }
+
+# `gaming` with a fixed cam crop (Final Fantasy Resonance 2026-10-23 c02, the green Lazarov lab at 5:08: the auto
+# face crop locked onto the game and missed the streamer). The streamer is background-removed bottom right, x ~1340-1840, head y ~680.
+gaming_cam_right_fixed:
+  game: { crop: [570, 0, 940, 840], width: 1080, y: 200 }
+  cam: { crop: [1340, 640, 540, 350], width: 860, y: 1180 }
+  thumb: { hide: [[0, 420, 640, 660], [1300, 560, 620, 520]] }   # chat, and the in-frame cam (the streamer is cut out on top)
+  captions: { bottom: 1150 }
+
+# `gaming_cam_right_fixed` with the game crop 70 px further left (Final Fantasy Resonance 2026-10-25 c05: Borin's
+# lever note is centred-left, text x 536-1380, so the x 570 crop cut the start of every line).
+gaming_cam_right_fixed_left:
+  game: { crop: [500, 0, 940, 840], width: 1080, y: 200 }
+  cam: { crop: [1340, 640, 540, 350], width: 860, y: 1180 }
+  thumb: { hide: [[0, 420, 640, 660], [1300, 560, 620, 520]] }
+  captions: { bottom: 1150 }
+
+# Gameplay EN with chat top right (Galactic Racer, 2026-10-07 / 2026-10-08). Measured from
+# full-res frames: chat x >= 1320, y 180-330. Cam bottom right (x >= 1500, y >= 690) or, on
+# 2026-10-07 from ~01:30, bottom left (x 180-560, y >= 660). The vehicle sits around y 600-960,
+# so the game crop keeps the full height and moves sideways instead.
+gaming_chat_right:
+  # Same shape as `gaming`, shifted left to stop at the chat.
+  game: { crop: [380, 0, 940, 840], width: 1080, y: 200 }
+  cam: { crop: [1500, 720, 400, 260], width: 860, y: 1180, auto: true }
+  thumb: { hide: [[1300, 0, 620, 400]] }   # chat runs from the top (Satisfactory 2026-10-16)
+  captions: { bottom: 1150 }
+
+gaming_cam_left:
+  # Between the cam (x <= 560) and the chat (x >= 1320): narrower, so it's drawn 1000 wide.
+  game: { crop: [570, 0, 750, 840], width: 1000, y: 160 }
+  cam: { crop: [170, 700, 400, 260], width: 860, y: 1300, auto: true, region: [0.0, 0.4, 0.45, 1.0] }
+  thumb: { hide: [[1300, 140, 620, 240]] }
+  captions: { bottom: 1260 }
+
+# gaming_cam_left with the chat bottom right instead of top right (Enshrouded 2026-10-17_2: cam x 0-640,
+# y >= ~500; chat x >= ~1320, y >= ~860). Same Short boxes; the thumbnail blurs the in-frame cam (the streamer
+# is cut out on top anyway) and the chat.
+gaming_cam_left_chat_low:
+  game: { crop: [570, 0, 750, 840], width: 1000, y: 160 }
+  cam: { crop: [170, 700, 400, 260], width: 860, y: 1300, auto: true, region: [0.0, 0.4, 0.45, 1.0] }
+  thumb: { hide: [[0, 480, 680, 600], [1300, 860, 620, 220]] }
+  captions: { bottom: 1260 }
+
+# gaming_cam_left with a narrower cam (Enshrouded 2026-10-20: cam x 0-~430, y >= ~670; the streamer's face x ~200-300,
+# y ~750-920; chat top right). The auto crop ran past the cam's right edge and showed a strip of game beside the streamer.
+gaming_cam_left_narrow:
+  game: { crop: [570, 0, 750, 840], width: 1000, y: 160 }
+  cam: { crop: [10, 680, 420, 300], width: 800, y: 1290 }
+  thumb: { hide: [[0, 640, 460, 440], [1300, 100, 620, 280]] }   # the in-frame cam (the streamer is cut out on top) and the chat
+  captions: { bottom: 1260 }
+
+# gaming_cam_left for a prop held up to the cam (2026-10-17_2 s05, the DeLorean model at 0:49:12-0:49:32:
+# held at chest height, then low in the bottom-left corner, x 40-640, y 800-1080). Fixed wide cam crop
+# instead of auto face, so the prop stays in; a short game strip on top.
+gaming_cam_left_prop:
+  game: { crop: [480, 200, 960, 400], width: 1080, y: 180 }
+  cam: { crop: [0, 440, 720, 640], width: 1000, y: 640 }
+  thumb: { hide: [[1300, 140, 620, 240]] }
+  captions: { bottom: 620 }
+
+# The Galactic Racer tour map, for clips about the planet name and its Aurebesh line at the
+# bottom centre (2026-10-08_2 01:11:40: Aurebesh y ~910, "ANDO PRIME" y 945-980).
+gaming_map_bottom:
+  game: { crop: [400, 400, 960, 640], width: 1080, y: 280 }
+  cam: { crop: [1500, 720, 400, 260], width: 860, y: 1170, auto: true }
+  thumb: { hide: [[1300, 140, 620, 240]] }
+  # Captions between the game and the cam, so they never cover the text on the map.
+  captions: { bottom: 1100 }
+
+# Anki review scene (2026-10-03, Pokemon LeafGreen day 0): Anki fills one side, the cam is
+# bottom left. Measured from full-res frames at 00:58:40 / 00:41:40 (Anki left) and 00:13:30
+# (Anki right). The card (word, screenshot, reading, meaning) goes on top, cam below.
+anki_left:
+  game: { crop: [0, 140, 610, 680], width: 960, y: 150 }
+  cam: { crop: [120, 780, 400, 260], width: 760, y: 1235, auto: true, region: [0.0, 0.5, 0.45, 1.0] }
+  captions: { bottom: 1215 }
+
+anki_right:
+  game: { crop: [1310, 110, 610, 680], width: 960, y: 150 }
+  cam: { crop: [120, 780, 400, 260], width: 760, y: 1235, auto: true, region: [0.0, 0.5, 0.45, 1.0] }
+  captions: { bottom: 1215 }
+
+# Anki review full screen with the cam bottom right (Breath of Fire IV review, 2026-10-22 0:29 to 0:38;
+# measured from a 960 px still at 0:34:45): card x 640-1280, word at the top, the game screenshot
+# y 236-596, answer below (left out: the word card shows it). Cam box x 1272-1920, y 616-1080;
+# that day it pointed at the writing pad. Captions sit in the gap between card and cam.
+anki_center:
+  game: { crop: [600, 90, 672, 530], width: 1000, y: 290 }
+  cam: { crop: [1272, 616, 648, 464], width: 480, y: 1190 }
+  cards: { y: 40 }
+  badge: false
+  captions: { bottom: 1180 }
+
+# IRL scene (Wabi Sanji Outside, 2026-10-09 Pokemon GO walk). Measured from a full-res frame at
+# 00:34:05: gimbal camera x 0-1420, phone screen x 1420-1920 (full height). Chat overlay bottom left
+# (y >= 1000) and the "intermittent access to chat" line at the bottom are cropped out.
+irl:
+  # Walk camera on top, 3:2 from the middle of the frame.
+  game: { crop: [240, 40, 1080, 720], width: 1080, y: 130 }
+  # Phone below (the Pokemon GO screen); its bottom menu sits under the Shorts UI.
+  cam: { crop: [1420, 50, 500, 980], width: 440, y: 870 }
+  thumb: { crop: [0, 100, 1420, 799], face: false }   # the walk camera; the cam box here is the phone, not the streamer
+  captions: { bottom: 840 }
+
+# irl_walk: walk camera only, for stretches where the phone shows the chat log instead of a game
+# (2026-10-16 o01). Portrait slice of the gimbal camera (x 0-1420), above the chat line (y >= 1000).
+irl_walk:
+  game: { crop: [360, 40, 700, 900], width: 1080, y: 170 }
+  thumb: { crop: [0, 100, 1420, 799], face: false }   # walk camera only; the phone (chat log, viewer names) is x >= 1420
+  captions: { bottom: 1450 }
+
+# Desk scene (LEGO builds, 2026-10-12): one camera, no facecam, so no cam box. Chat overlay
+# bottom left (x <= 600, y >= 730, grows upward). Measured from 960 px stills.
+# desk_angled: the camera looking across the desk (2:50 to 3:47 on 2026-10-12). The build and
+# hands sit at x 200-1120, y 340-680; the crop stops at y 720, above the chat.
+desk_angled:
+  game: { crop: [240, 0, 1060, 720], width: 1080, y: 300 }
+  thumb: { hide: [[0, 700, 640, 380]] }   # chat, bottom left
+  captions: { bottom: 1190 }
+# desk: straight overhead (from 3:51 on 2026-10-12). Build at x 800-1280, instructions x >= 1400.
+desk:
+  game: { crop: [600, 0, 820, 1080], width: 1080, y: 120 }
+  thumb: { hide: [[0, 700, 640, 380]] }
+  captions: { bottom: 1470 }
+# desk_chat_right: straight overhead with the chat overlay bottom RIGHT (2026-10-18_2, the first 2K
+# recording, LEGO Dark Falcon). From the 3:13:20 and 3:43:14 frames: build x ~520-1120, chat text from
+# x ~1326, y >= ~650 (grows upward). The plain `desk` crop (to x 1420) showed chat lines down its right edge.
+desk_chat_right:
+  game: { crop: [490, 0, 820, 1080], width: 1080, y: 120 }
+  thumb: { hide: [[1300, 620, 620, 460]] }
+  captions: { bottom: 1470 }
+# desk_front: camera in front of the finished build (2026-10-13 from ~4:35, LEGO Donkey Kong
+# cabinet). From the 4:43:10 frame: cabinet x ~520-1200, y 0-920; chat overlay bottom left
+# (x <= ~600, y >= ~820, grows upward). Crop starts at 610: at 540 the ends of long chat lines
+# showed in the bottom-left corner (c09 preview); costs a sliver of the cabinet's left edge.
+desk_front:
+  game: { crop: [610, 0, 820, 1080], width: 1080, y: 120 }
+  thumb: { hide: [[0, 700, 640, 380]] }
+  captions: { bottom: 1470 }
+# desk_left: overhead with the build at the left of the desk (2026-10-13 ~4:31, build x ~480-840,
+# hands from x ~400). Stops above the chat overlay (bottom left, top line y ~830 by 4:32) instead of cropping
+# it sideways, so the game is shorter.
+desk_left:
+  game: { crop: [250, 0, 880, 820], width: 1080, y: 200 }
+  thumb: { hide: [[0, 700, 640, 380]] }
+  captions: { bottom: 1470 }
+# desk_wide: the desk cam lifted to a low front view of a finished build (2026-10-19 from 5:31:00, the Dark
+# Falcon: ship x ~220-1820, y ~220-920). The whole ship, letterboxed small, instead of a slice of it. Stops at
+# y 990, above the chat lines (bottom left, from y ~1005, x <= ~490).
+desk_wide:
+  game: { crop: [300, 160, 1540, 830], width: 1080, y: 480 }
+  thumb: { hide: [[0, 680, 640, 400]] }
+  captions: { bottom: 1180 }
+# gaming_nocam: Gameplay EN when the streamer is away from the desk (2026-10-13 0:22, Blue Shift training
+# room: the facecam shows an empty chair). Game only, from the chat (x <= ~560) to the cam (x < 1330).
+gaming_nocam:
+  game: { crop: [570, 0, 760, 1000], width: 1080, y: 140 }
+  thumb: { hide: [[0, 420, 640, 660]] }
+  captions: { bottom: 1470 }
+
+# response: watching another creator's video full screen in Brave with the big background-removed
+# cam bottom right (2026-10-14_2, ConnorClips watch-along). Measured from the full-res frame at
+# 00:43:00: YouTube player x ~197-1740, y ~90-960; Connor x ~620-1270 (their chat panel x <= ~600);
+# The streamer x >= 1150 from y ~450 (head x ~1440-1660, y ~460-730). First preview (r01): x 600 showed the edge
+# of Connor's chat panel and x 1300 caught the streamer's raised hand, so the game crop is x 700-1270; the cam is
+# cropped tighter and drawn bigger. Second preview: The streamer's face reached y ~1580 (under the Shorts UI), so
+# the game crop is shorter and the cam moves up to y 1060 (face ~1300-1480).
+response:
+  game: { crop: [700, 120, 570, 460], width: 1080, y: 180 }
+  cam: { crop: [1330, 470, 590, 540], width: 820, y: 1060, auto: true, region: [0.6, 0.4, 1.0, 1.0] }
+  # Thumbnail: the YouTube player with the creator's chat panel blurred (viewer names); the streamer is cut out
+  # of face_box only, so nothing from the video joins the cutout.
+  thumb: { crop: [197, 90, 1543, 868], hide: [[197, 90, 430, 870]], face_box: [1250, 420, 670, 660] }
+  captions: { bottom: 1040 }
+# response_x: the same watch-along while Connor's video shows Jake Lucky's X post of the Nadeshot clip
+# (2026-10-14_2, 00:07 to 00:17). From the full-res frame at 00:12:55: tweet text x ~650-1300, y ~180-340;
+# the embedded video x ~653-1357, y ~353-747 (Nadeshot's face y ~400-630); the streamer's cutout from x ~1240.
+response_x:
+  game: { crop: [640, 180, 600, 460], width: 1080, y: 180 }
+  cam: { crop: [1330, 470, 590, 540], width: 820, y: 1060, auto: true, region: [0.6, 0.4, 1.0, 1.0] }
+  thumb: { crop: [197, 90, 1543, 868], hide: [[197, 90, 430, 870]], face_box: [1250, 420, 670, 660] }
+  captions: { bottom: 1000 }

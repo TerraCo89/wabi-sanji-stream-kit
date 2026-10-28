@@ -1,0 +1,249 @@
+# Wabi Sanji stream series registry.
+# Episodes are numbered chronologically by stream date within each series, starting from the
+# earliest backlog stream (the 2026-10-05 pipeline test is numbered by its date like any other).
+# `stream-number` rebuilds each `episodes` list from approved session.yaml files.
+# numbering: open   = earlier backlog sessions of this game may still be unsegmented; don't publish
+# numbering: locked = every session of this game up to now is segmented; numbers are final
+# thumb_label (optional): short name for the thumbnail badge; default is `game` without " (JP)", then `name`
+series:
+  - name: Learning Japanese with Breath of Fire IV
+    game: Breath of Fire IV (JP)
+    type: japanese
+    playlist_id: PLMbQUfTUoXv8   # https://www.youtube.com/playlist?list=PLMbQUfTUoXv8
+    numbering: locked   # locked 2026-10-05 by the streamer: first BoF4 stream was 2026-10-05
+    episodes:   # [{session, segment, episode}]
+      - { session: "2026-10-05", segment: 2, episode: 1 }
+      - { session: "2026-10-12", segment: 1, episode: 2 }
+      - { session: "2026-10-14", segment: 2, episode: 3 }
+      - { session: "2026-10-19", segment: 3, episode: 4 }
+      - { session: "2026-10-20", segment: 3, episode: 5 }
+      - { session: "2026-10-22", segment: 3, episode: 6 }
+  - name: Alchemy Factory
+    game: Alchemy Factory
+    type: gaming
+    playlist_id: PLU_VXeoYFHXE   # https://www.youtube.com/playlist?list=PLU_VXeoYFHXE
+    numbering: locked   # locked 2026-10-05: all 16 Alchemy Factory streams (2026-09-10 to 2026-10-05) segmented and approved
+    episodes:
+      - { session: "2026-09-10", segment: 1, episode: 1 }
+      - { session: "2026-09-11", segment: 1, episode: 2 }
+      - { session: "2026-09-15", segment: 1, episode: 3 }
+      - { session: "2026-09-16", segment: 1, episode: 4 }
+      - { session: "2026-09-17", segment: 2, episode: 5 }
+      - { session: "2026-09-17_2", segment: 0, episode: 6 }
+      - { session: "2026-09-18_3", segment: 2, episode: 7 }
+      - { session: "2026-09-20", segment: 0, episode: 8 }
+      - { session: "2026-09-20_2", segment: 0, episode: 9 }
+      - { session: "2026-09-21", segment: 0, episode: 10 }
+      - { session: "2026-09-21_2", segment: 1, episode: 11 }
+      - { session: "2026-09-23_3", segment: 1, episode: 12 }
+      - { session: "2026-10-02_3", segment: 4, episode: 13 }
+      - { session: "2026-10-03", segment: 5, episode: 14 }
+      - { session: "2026-10-04", segment: 1, episode: 15 }
+      - { session: "2026-10-05", segment: 3, episode: 16 }
+      - { session: "2026-10-09", segment: 4, episode: 17 }
+      - { session: "2026-10-13", segment: 5, episode: 18 }
+      - { session: "2026-10-14", segment: 4, episode: 19 }
+  - name: Learning Japanese with Pokemon LeafGreen
+    game: Pokemon LeafGreen (JP)
+    type: japanese
+    playlist_id: null
+    numbering: locked
+    episodes:
+      - { session: "2026-10-03", segment: 1, episode: 1 }
+  - name: Wanderburg
+    game: Wanderburg
+    type: gaming
+    playlist_id: null
+    numbering: locked
+    episodes:
+      - { session: "2026-09-15_2", segment: 1, episode: 1 }
+      - { session: "2026-09-15_3", segment: 0, episode: 2 }
+  - name: World of Warcraft
+    game: World of Warcraft
+    type: gaming
+    playlist_id: null
+    numbering: locked
+    episodes:
+      - { session: "2026-09-18_2", segment: 1, episode: 1 }
+      - { session: "2026-09-18_3", segment: 0, episode: 2 }
+      - { session: "2026-09-21_2", segment: 3, episode: 3 }
+  - name: Warcraft III
+    game: Warcraft III
+    type: gaming
+    playlist_id: null
+    numbering: locked   # 2026-09-17 was the "Forsaken Kingdom" campaign (official, sold separately: "Requires purchase of Forsaken Kingdom campaign")
+    episodes:
+      - { session: "2026-09-17", segment: 0, episode: 1 }
+      - { session: "2026-09-17_3", segment: 1, episode: 2 }
+  - name: Graveyard Keeper II
+    game: Graveyard Keeper II
+    type: gaming
+    playlist_id: PLI7B4DcpVHyk   # https://www.youtube.com/playlist?list=PLI7B4DcpVHyk
+    numbering: locked
+    episodes:
+      - { session: "2026-09-23_2", segment: 1, episode: 1 }
+      - { session: "2026-09-23_3", segment: 0, episode: 2 }
+      - { session: "2026-09-26", segment: 0, episode: 3 }
+      - { session: "2026-09-28", segment: 1, episode: 4 }
+      - { session: "2026-09-28_2", segment: 1, episode: 5 }
+      - { session: "2026-09-29", segment: 1, episode: 6 }
+      - { session: "2026-09-30", segment: 1, episode: 7 }
+      - { session: "2026-09-30_3", segment: 1, episode: 8 }
+      - { session: "2026-10-01", segment: 1, episode: 9 }
+      - { session: "2026-10-02_2", segment: 0, episode: 10 }
+  - name: Minecraft Dungeons II
+    game: Minecraft Dungeons II
+    type: gaming
+    playlist_id: null
+    numbering: locked   # name read from the launcher window; confirm
+    episodes:
+      - { session: "2026-09-30_3", segment: 7, episode: 1 }
+      - { session: "2026-10-02_2", segment: 2, episode: 2 }
+      - { session: "2026-10-03", segment: 3, episode: 3 }
+      - { session: "2026-10-15", segment: 5, episode: 4 }
+  - name: "Star Wars: Zero Company"
+    game: "Star Wars: Zero Company"
+    type: gaming
+    playlist_id: null
+    numbering: locked
+    episodes:
+      - { session: "2026-09-08", segment: 0, episode: 1 }
+      - { session: "2026-09-08_2", segment: 1, episode: 2 }
+  - name: Ultra Pool
+    game: Ultra Pool
+    type: gaming
+    playlist_id: PLOoU9VrntWQ4   # https://www.youtube.com/playlist?list=PLOoU9VrntWQ4
+    numbering: locked
+    episodes:
+      - { session: "2026-09-23", segment: 0, episode: 1 }
+      - { session: "2026-10-22_2", segment: 5, episode: 2 }
+  - name: "Orcs Must Die! Deathtrap"
+    game: "Orcs Must Die! Deathtrap"
+    type: gaming
+    playlist_id: null
+    numbering: locked
+    episodes:
+      - { session: "2026-09-28_2", segment: 3, episode: 1 }
+      - { session: "2026-10-11", segment: 2, episode: 2 }
+  - name: Half-Life
+    game: Half-Life
+    type: gaming
+    playlist_id: PLW3fPJaoPAI0   # https://www.youtube.com/playlist?list=PLW3fPJaoPAI0
+    numbering: locked   # the original Half-Life (main menu), not Black Mesa. Includes the expansions (the streamer 2026-10-10): Opposing Force, then Blue Shift, as later episodes; the hook names the expansion ("Opposing Force: ...")
+    episodes:
+      - { session: "2026-10-02", segment: 1, episode: 1 }
+      - { session: "2026-10-09", segment: 6, episode: 2 }
+      - { session: "2026-10-10", segment: 4, episode: 3 }
+      - { session: "2026-10-10", segment: 5, episode: 4 }
+      - { session: "2026-10-12", segment: 3, episode: 5 }
+      - { session: "2026-10-13", segment: 2, episode: 6 }
+      - { session: "2026-10-14_2", segment: 3, episode: 7 }
+      - { session: "2026-10-15", segment: 1, episode: 8 }
+  - name: Rough Edges
+    game: null
+    type: coding
+    title_sep: ": "   # hook = what was built, Title Case
+    playlist_id: null
+    numbering: locked   # standalone coding streams; titles "Rough Edges #N: <label>" (the streamer 2026-10-06)
+    episodes:
+      - { session: "2026-09-24", segment: 1, episode: 1 }
+      - { session: "2026-10-10", segment: 1, episode: 2 }
+  - name: "Star Wars: Galactic Racer 100% Campaign"
+    game: "Star Wars: Galactic Racer"
+    type: gaming
+    playlist_id: PLajvOIKk2v9g   # https://www.youtube.com/playlist?list=PLajvOIKk2v9g
+    numbering: locked   # 2026-10-08 (the streamer: campaign is its own series). First launch + prologue on 2026-10-07, campaign completed 2026-10-08_2
+    episodes:
+      - { session: "2026-10-07", segment: 1, episode: 1 }
+      - { session: "2026-10-08_2", segment: 1, episode: 2 }
+      - { session: "2026-10-14", segment: 6, episode: 3 }
+  - name: "Star Wars: Galactic Racer Multiplayer"
+    game: "Star Wars: Galactic Racer"
+    type: gaming
+    playlist_id: PLajvOIKk2v9g   # https://www.youtube.com/playlist?list=PLajvOIKk2v9g
+    numbering: locked   # 2026-10-08: first multiplayer tour right after the campaign on 2026-10-08_2
+    episodes:
+      - { session: "2026-10-08_2", segment: 2, episode: 1 }
+  - name: Wabi Sanji Outside
+    game: null
+    type: talk
+    title_sep: ": "   # hook = what we did outside, e.g. "Wabi Sanji Outside #1: Pokemon GO Walk"
+    playlist_id: PLahPd_hMIAjA   # https://www.youtube.com/playlist?list=PLahPd_hMIAjA
+    numbering: locked   # IRL walk-n-talk series, any "go" game (the streamer 2026-10-09). Starts 2026-10-09: the 2026-10-05 and 2026-10-08 IRL bits stay skipped (audio broken / camera not working)
+    episodes:
+      - { session: "2026-10-09", segment: 1, episode: 1 }
+      - { session: "2026-10-16", segment: 1, episode: 2 }
+      - { session: "2026-10-20", segment: 1, episode: 3 }
+      - { session: "2026-10-22", segment: 1, episode: 4 }
+  - name: Antivirus Survivors 2003
+    game: Antivirus Survivors 2003
+    type: gaming
+    playlist_id: null
+    numbering: locked   # first stream 2026-10-10 (Steam demo, "Antivirus Survivors 2003 Professional"); every earlier session is segmented
+    episodes:
+      - { session: "2026-10-10", segment: 3, episode: 1 }
+  - name: Enshrouded
+    game: Enshrouded
+    type: gaming
+    playlist_id: PLeRtJQ-VuNaY   # https://www.youtube.com/playlist?list=PLeRtJQ-VuNaY
+    numbering: locked   # locked 2026-10-16 by the streamer (Enshrouded 1.0 is popular now): 2026-10-11 is #1 (new "Wabi Sanji" world), 2026-10-16 is #2. The 2026-10-06 backlog recordings were not segmented first
+    episodes:
+      - { session: "2026-10-11", segment: 5, episode: 1 }
+      - { session: "2026-10-16", segment: 5, episode: 2 }
+      - { session: "2026-10-17", segment: 1, episode: 3 }
+      - { session: "2026-10-17_2", segment: 1, episode: 4 }
+      - { session: "2026-10-20", segment: 7, episode: 5 }
+      - { session: "2026-10-22_2", segment: 1, episode: 6 }
+  - name: Wabi Sanji Builds
+    game: null
+    type: talk
+    title_sep: ": "   # hook = the build, e.g. "Wabi Sanji Builds #1: LEGO Donkey Kong"
+    playlist_id: PLK0zrLuk-LXU   # https://www.youtube.com/playlist?list=PLK0zrLuk-LXU
+    numbering: locked   # locked 2026-10-13 by the streamer: 2026-10-12 is #1 (LEGO Donkey Kong 72051, Part 1), 2026-10-13 is #2 (Part 2)
+    episodes:
+      - { session: "2026-10-12", segment: 5, episode: 1 }
+      - { session: "2026-10-13", segment: 4, episode: 2 }
+      - { session: "2026-10-18", segment: 1, episode: 3 }
+      - { session: "2026-10-18_2", segment: 1, episode: 4 }
+      - { session: "2026-10-19", segment: 4, episode: 5 }
+  - name: Wabi Sanji Responds
+    game: null
+    type: talk
+    title_sep: ": "   # hook = the streamer's take, e.g. "Wabi Sanji Responds #1: Gacha Is Gambling With a Different Skin"
+    playlist_id: PLYTWWljuZVsw   # https://www.youtube.com/playlist?list=PLYTWWljuZVsw
+    numbering: locked   # new 2026-10-14: compact response edits of the streamer's commentary on another creator's video; 2026-10-14_2 is #1
+    episodes:
+      - { session: "2026-10-14_2", segment: 1, episode: 1 }
+  - name: Half-Life 2
+    game: Half-Life 2
+    type: gaming
+    playlist_id: null
+    numbering: locked   # locked 2026-10-15 by the streamer: first Half-Life 2 stream (New Game from Point Insertion) is #1; its own series, not part of "Half-Life"
+    episodes:
+      - { session: "2026-10-15", segment: 3, episode: 1 }
+  - name: Satisfactory
+    game: Satisfactory
+    type: gaming
+    playlist_id: PLZlLarF2744E   # https://www.youtube.com/playlist?list=PLZlLarF2744E
+    numbering: locked   # locked 2026-10-16 by the streamer: first Satisfactory stream (New Game "Wabi Sabi", Northern Forest) is #1
+    episodes:
+      - { session: "2026-10-16", segment: 3, episode: 1 }
+      - { session: "2026-10-20", segment: 5, episode: 2 }
+  - name: Star Citizen
+    game: Star Citizen
+    type: gaming
+    playlist_id: PLLuQQSOVcfBw   # https://www.youtube.com/playlist?list=PLLuQQSOVcfBw
+    numbering: locked   # locked 2026-10-22 by the streamer: first time in the 'verse (2026-10-22_2: install, character creation, first flight) is #1
+    episodes:
+      - { session: "2026-10-22_2", segment: 4, episode: 1 }
+  - name: Final Fantasy Resonance
+    game: Final Fantasy Resonance
+    type: gaming
+    playlist_id: PLeSqX4IEpooE   # https://www.youtube.com/playlist?list=PLeSqX4IEpooE
+    numbering: locked   # locked 2026-10-23 by the streamer: the game came out overnight before this stream, so the first stream (2026-10-23, New Game through most of Chapter 1) is #1
+    episodes:
+      - { session: "2026-10-23", segment: 1, episode: 1 }
+      - { session: "2026-10-25", segment: 1, episode: 2 }
+      - { session: "2026-10-25", segment: 2, episode: 3 }
+      - { session: "2026-10-25", segment: 3, episode: 4 }
+      - { session: "2026-10-25", segment: 4, episode: 5 }

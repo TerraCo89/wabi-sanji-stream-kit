@@ -1,0 +1,746 @@
+# ARIA's meme library. Files live in the memes folder
+# (stream.live.memes_dir in apps/screenshot-parser/config.yaml, or WABISANJI_MEMES).
+# Live, ARIA pops them on stream; after the stream, /stream-memes adds a few to
+# episodes on moments that missed one.
+#
+# Each meme:
+#   id:         short and unique; `wabisanji live meme <id>` pops it by hand
+#   file:       clip with sound (.mp4), sound (.mp3) or image/GIF. Clips and
+#               sounds play to the end (12 s cap)
+#   caption:    for sounds: the line, shown on screen while it plays
+#   phrases:    things the streamer says that fire it instantly (1-2 s after the sentence).
+#               Use distinctive lines ("it's a trap"), not everyday words ("trap").
+#               3+ word phrases also match when Whisper gets a word slightly wrong.
+#   about:      what it means and when it fits. Claude reads this to pick memes
+#               live and for episodes, so be specific about the situation.
+#   category:   fail | shock | suspicion | win | awkward | chaos | time | greeting |
+#               numbers | innuendo | japanese
+#   risk:       Content ID risk of the audio: low (library sound effects), med (TV,
+#               viral and game clips), high (film studios, clips of music).
+#               Episodes use any risk; Shorts only low. Music-based memes
+#               (Roundabout, coffin dance, Rickroll...) stay out of the library.
+#   family:     false for innuendo and the like: skipped in family mode ("Hey ARIA,
+#               family mode") and never put in episodes where kids are on stream
+#   cooldown_s: optional, default 300: the same meme won't repeat sooner
+#
+# Add one: wabisanji live fetch "ytsearch:<what to search>" --expect "<the line>"
+#   --id <id> --caption ... --category ... --risk ... --about "..." (see --help)
+# Check it with: apps/screenshot-parser/.venv/Scripts/wabisanji.exe live memes
+
+memes:
+  - id: thats-what-she-said
+    file: thats-what-she-said.mp4  # The Office (official Peacock clip on GIPHY), 6.8 s
+    phrases: ["that's what she said", "thats what she said"]
+    about: Jim says "That's what she said", then Michael Scott, "Hey! Nice! Really good!".
+      Fire when the streamer says an accidental innuendo, like "it's so hard", "it won't fit",
+      "that's huge", "I can't get it in", "it's too big", "go deeper", "just put it in".
+      Real Civil Engineer's most-used cutaway.
+    category: innuendo
+    risk: med
+    family: false
+
+  - id: noice
+    file: noice.mp4  # Key & Peele "Noice!" (Comedy Central on GIPHY), 3.1 s
+    phrases: ["69", "sixty nine", "sixty-nine", "noice"]
+    about: Key & Peele saying "Noice!". The 69 joke, the streamer's running number gag (like
+      Real Civil Engineer's "16"). Fire when the number 69 comes up (a timer, damage
+      number, price, level or bit count) or the streamer says "noice".
+    category: numbers
+    risk: med
+    family: false
+    cooldown_s: 120
+
+  - id: oh-no-anyway
+    file: oh-no-anyway.mp4  # https://www.youtube.com/watch?v=6pc0u-iqIDw, 1.9 s
+    caption: Oh no. Anyway.
+    phrases: [oh no anyway]
+    about: Jeremy Clarkson shrugging off a disaster. Something goes wrong (a death, lost loot,
+      a wrecked build) and the streamer just moves on. Real Civil Engineer staple.
+    category: fail
+    risk: med
+
+  - id: i-like-money
+    file: i-like-money.mp4  # https://www.youtube.com/watch?v=ys9Q_VHNMZM at 2.6s, 1.9 s
+    caption: Hello, I like money.
+    phrases: [i like money]
+    about: Mr Krabs. The streamer finds or earns money, gold, loot or a big reward, or buys something.
+      Real Civil Engineer staple.
+    category: win
+    risk: med
+
+  - id: another-one
+    file: another-one.mp4  # https://www.youtube.com/watch?v=zIeA2N2Onb8 at 2.0s, 1.6 s
+    caption: Another one.
+    phrases: []
+    about: 'DJ Khaled. The streamer does the same thing again: another kill, another item, another death,
+      the third attempt. Real Civil Engineer staple.'
+    category: win
+    risk: med
+    cooldown_s: 900
+
+  - id: are-you-sure
+    file: are-you-sure.mp4  # https://www.youtube.com/watch?v=oHC1230OpOg at 4.6s, 1.9 s
+    caption: Are you sure about that?
+    phrases: [are you sure about that]
+    about: John Cena. The streamer is overconfident ('this'll be easy', 'I've got this', 'no way I die
+      here') right before it goes wrong, or says something chat will doubt. Real Civil Engineer
+      staple.
+    category: suspicion
+    risk: med
+
+  - id: aint-nobody-got-time
+    file: aint-nobody-got-time.mp4  # https://www.youtube.com/watch?v=fIq1E3zYQcc, 2.2 s
+    caption: Ain't nobody got time for that!
+    phrases: [ain't nobody got time for that, aint nobody got time for that]
+    about: Sweet Brown. The streamer refuses a long grind, a side quest, a long walk or a tedious puzzle.
+      Real Civil Engineer staple.
+    category: awkward
+    risk: med
+
+  - id: cant-keep-getting-away
+    file: cant-keep-getting-away.mp4  # https://www.youtube.com/watch?v=_ziQVeGZajE, 3.3 s
+    caption: You can't keep getting away with this!
+    phrases: [you can't keep getting away with this]
+    about: The streamer gets lucky again, cheeses a boss, abuses a glitch or survives on 1 HP one more
+      time. Real Civil Engineer staple.
+    category: win
+    risk: med
+
+  - id: hes-a-madman
+    file: hes-a-madman.mp3  # https://www.youtube.com/watch?v=bNJ1Sn8jPto, 2.0 s, sound only (the video was a green screen, icon or unrelated)
+    caption: He's a madman!
+    phrases: [he's a madman, i'm a madman]
+    about: 'The streamer makes a reckless call: jumps off something, fights a boss underlevelled, spends
+      everything. Real Civil Engineer staple.'
+    category: chaos
+    risk: med
+
+  - id: few-moments-later
+    file: few-moments-later.mp4  # https://www.youtube.com/watch?v=c0ruHxX7r3M, 2.2 s
+    caption: A few moments later...
+    phrases: [a few moments later]
+    about: 'SpongeBob narrator time card. A time skip: a long grind, a loading screen, ''this''ll
+      only take a second'' that clearly won''t. Real Civil Engineer staple.'
+    category: time
+    risk: med
+
+  - id: emotional-damage
+    file: emotional-damage.mp4  # https://www.youtube.com/watch?v=bHb5CFGYz1A, 3.5 s
+    caption: EMOTIONAL DAMAGE!
+    phrases: [emotional damage]
+    about: Steven He. A brutal loss, losing a long run, chat roasting the streamer, or a sad story moment
+      that hurts.
+    category: fail
+    risk: med
+
+  - id: its-a-trap
+    file: its-a-trap.mp4  # https://www.youtube.com/watch?v=4F4qzPbcFiA, 1.7 s
+    caption: It's a trap!
+    phrases: [it's a trap]
+    about: Admiral Ackbar (Star Wars). A too-good chest, a suspicious empty room, an obvious
+      ambush, a deal that's too good.
+    category: suspicion
+    risk: high
+
+  - id: hello-there
+    file: hello-there.mp4  # https://www.youtube.com/watch?v=rEq1Z0bjdwc, 2.3 s
+    caption: Hello there.
+    phrases: []
+    about: Obi-Wan Kenobi. Greeting a raid, a new viewer, or an NPC who appears out of nowhere.
+    category: greeting
+    risk: high
+
+  - id: vine-boom
+    file: vine-boom.mp4  # https://www.youtube.com/watch?v=sVlgcSKJBz0 at 2.9s, 1.6 s
+    phrases: []
+    about: 'Bass boom on a punchline or a sudden realisation: ''wait...'', a reveal, an awkward
+      stare at the camera.'
+    category: shock
+    risk: med  # The Rock eyebrow video
+
+  - id: bruh
+    file: bruh.mp4  # https://www.youtube.com/watch?v=lsZqcXxGZBo at 7.4s, 1.3 s
+    phrases: [bruh]
+    about: Flat 'bruh'. The game (or the streamer) does something dumb or unfair.
+    category: fail
+    risk: low
+    cooldown_s: 600
+
+  - id: sad-trombone
+    file: sad-trombone.mp4  # https://www.youtube.com/watch?v=tKdcjJoXeEY at 1.9s, 4.0 s
+    phrases: []
+    about: 'Wah wah wah. A small failure or near miss: ''so close'', a missed jump, a wrong
+      answer.'
+    category: fail
+    risk: low
+
+  - id: airhorn
+    file: airhorn.mp4  # https://www.youtube.com/watch?v=UaUa_0qPPgc at 0.3s, 3.3 s
+    phrases: []
+    about: MLG air horn. A clutch play or a big win, often ironically for a tiny one.
+    category: win
+    risk: low
+
+  - id: metal-pipe
+    file: metal-pipe.mp4  # still from https://www.youtube.com/watch?v=iDLmYZ5HqgM at 1.0s + the myinstants sound
+    phrases: []
+    about: Metal pipe clang. Something falls, crashes or hits loudly; a very sudden failure.
+    category: chaos
+    risk: low
+
+  - id: crickets
+    file: crickets.mp4  # picture from https://www.youtube.com/watch?v=hu-gPzNHTd4 at 0.0s + the myinstants sound
+    phrases: []
+    about: Crickets. A joke lands flat, chat goes quiet, nobody answers the streamer's question.
+    category: awkward
+    risk: low
+
+  - id: windows-error
+    file: windows-error.mp4  # https://www.youtube.com/watch?v=u4NNS9ebvyE at 7.6s, 1.3 s
+    phrases: []
+    about: Windows XP error. A glitch, a bug, a wrong button, the game freezing or a menu doing
+      something unexpected.
+    category: fail
+    risk: med
+
+  - id: mgs-alert
+    file: mgs-alert.webm  # https://www.youtube.com/watch?v=2P5qbcRAXVk, red ! cut out on a transparent background (VP9 alpha), 1.7 s
+    phrases: [spotted me, i've been spotted, i got spotted, alert alert]
+    about: Metal Gear '!' alert. The streamer gets spotted by enemies or caught sneaking.
+    category: suspicion
+    risk: med
+
+  - id: among-us-sus
+    file: among-us-sus.mp4  # https://www.youtube.com/watch?v=pyxLFVidYCo at 6.6s, 4.9 s
+    phrases: [that's sus, kinda sus]
+    about: Among Us reveal sting. A shady NPC, a suspicious item, 'that's sus'.
+    category: suspicion
+    risk: med
+
+  - id: anime-wow
+    file: anime-wow.mp4  # https://www.youtube.com/watch?v=8WwgOrDR-nU at 0.1s, 4.5 s
+    phrases: []
+    about: Anime 'WOW'. An impressive play, gorgeous scenery, a cool reveal.
+    category: win
+    risk: low
+
+  - id: dun-dun-dun
+    file: dun-dun-dun.mp4  # https://www.youtube.com/watch?v=eiJUbfynMGM at 7.9s, 5.4 s
+    phrases: [plot twist]
+    about: Dramatic sting. A plot twist, a reveal, 'oh no'.
+    category: shock
+    risk: low
+
+  - id: hallelujah
+    file: hallelujah.mp4  # picture from https://www.youtube.com/watch?v=reKw3PbCGYc at 5.0s + the myinstants sound
+    phrases: []
+    about: Angelic choir. Rare loot, a checkpoint at last, 'finally!' after many attempts.
+    category: win
+    risk: low
+
+  - id: record-scratch
+    file: record-scratch.mp4  # https://www.youtube.com/watch?v=sy_Aje0hnac at 6.1s, 1.1 s
+    phrases: [hold up, wait wait wait]
+    about: 'Record scratch. The streamer stops mid-thought: ''hold up'', ''wait wait wait''.'
+    category: shock
+    risk: low
+
+  - id: wilhelm-scream
+    file: wilhelm-scream.mp4  # https://www.youtube.com/watch?v=dc5F2C0CYlA at 15.9s, 2.0 s
+    phrases: []
+    about: The Wilhelm scream. A character or the streamer falls off a cliff or ledge, or gets launched.
+      Used by Real Civil Engineer.
+    category: fail
+    risk: med  # Distant Drums (1951) film footage
+
+  - id: bonk
+    file: bonk.mp4  # https://www.youtube.com/watch?v=TV5faBBHfkw at 1.3s, 0.8 s
+    phrases: []
+    about: Bonk. A cheeky comment from chat or the streamer, or the streamer walking into a wall.
+    category: awkward
+    risk: low
+
+  - id: ka-ching
+    file: ka-ching.mp4  # https://www.youtube.com/watch?v=trR5YxZjfes at 1.6s, 2.8 s, cropped
+    phrases: []
+    about: Cash register. Buying something, selling loot, earning gold.
+    category: win
+    risk: low
+
+  - id: roblox-oof
+    file: roblox-oof.mp4  # still from https://www.youtube.com/watch?v=2cOckHfPztc at 0.5s + the myinstants sound
+    phrases: []
+    about: Roblox death 'oof'. A silly death or fall damage.
+    category: fail
+    risk: med
+
+  - id: price-is-right-fail
+    file: price-is-right-fail.mp4  # https://www.youtube.com/watch?v=QiX7cVjFU6A at 4.5s, 5.4 s
+    phrases: []
+    about: Game show losing horn. A wrong answer, a failed attempt, a guess that misses.
+    category: fail
+    risk: med
+
+  - id: nani
+    file: nani.mp4  # https://www.youtube.com/watch?v=tEArV9rspF0 at 33.5s, 1.4 s
+    caption: NANI?!
+    phrases: []
+    about: Anime 'NANI?!'. The streamer is shocked ('what?!') during Japanese study or a game. Not when
+      何 (nani) just comes up as vocab.
+    category: japanese
+    risk: med
+
+  - id: omae-wa-mou-shindeiru
+    file: omae-wa-mou-shindeiru.mp4  # https://www.youtube.com/watch?v=tEArV9rspF0 at 31.4s, 3.6 s
+    caption: Omae wa mou shindeiru.
+    phrases: [omae wa mou shindeiru]
+    about: Fist of the North Star. An enemy is one hit from death, or 死ぬ (shinu, to die) comes
+      up in Japanese study.
+    category: japanese
+    risk: med
+
+  - id: yare-yare-daze
+    file: yare-yare-daze.mp4  # https://www.youtube.com/watch?v=yWDAw2nsIjw at 1.9s, 2.0 s
+    caption: Yare yare daze...
+    phrases: [yare yare]
+    about: Jotaro's weary sigh. The streamer sighs at a hard kanji or another long grind.
+    category: japanese
+    risk: med
+
+  - id: za-warudo
+    file: za-warudo.mp4  # https://www.youtube.com/watch?v=NRBqnKjJ8AE at 8.9s, 4.0 s
+    caption: ZA WARUDO!
+    phrases: [za warudo]
+    about: JoJo's time stop. The streamer pauses the game, or 世界 (sekai, world) comes up.
+    category: japanese
+    risk: med
+
+  - id: objection
+    file: objection.mp4  # https://www.youtube.com/watch?v=8kxrYMA6YzA at 20.6s, 1.2 s
+    caption: OBJECTION!
+    phrases: [objection]
+    about: Ace Attorney. The streamer corrects a reading or a translation ('actually, that's wrong'),
+      or chat corrects him.
+    category: japanese
+    risk: med
+
+  - id: tuturu
+    file: tuturu.mp4  # https://www.youtube.com/watch?v=QTpmSALDqTE at 21.4s, 3.0 s
+    caption: Tuturu~
+    phrases: []
+    about: Mayuri's greeting (Steins;Gate). Start of a study block, or greeting chat.
+    category: japanese
+    risk: med
+
+  - id: over-9000
+    file: over-9000.mp4  # https://www.youtube.com/watch?v=pb-GUD5hAHc at 10.1s, 2.4 s
+    caption: It's over 9000!
+    phrases: [over 9000, "over 9,000", over nine thousand]
+    about: 'Dragon Ball Z. A huge number: damage, gold, a counting lesson (数).'
+    category: numbers
+    risk: med
+
+  - id: you-died
+    file: you-died.png  # drawn for Wabi Sanji, image
+    phrases: [you died]
+    about: 'Dark Souls-style YOU DIED screen. The streamer dies: a dumb death, a dramatic one, or a
+      boss wipe.'
+    category: fail
+    risk: low
+
+  - id: wasted
+    file: wasted.png  # drawn for Wabi Sanji, image
+    phrases: [wasted]
+    about: 'GTA ''wasted''. A spectacular death: a crash, a long fall, getting run over or blown
+      up.'
+    category: fail
+    risk: low
+
+  - id: mission-passed
+    file: mission-passed.png  # drawn for Wabi Sanji, image
+    phrases: [mission passed]
+    about: GTA San Andreas 'mission passed, respect+'. A quest, boss or objective done at last.
+    category: win
+    risk: low
+
+  - id: task-failed-successfully
+    file: task-failed-successfully.png  # drawn for Wabi Sanji, image
+    phrases: [task failed successfully]
+    about: Windows error dialog. The streamer wins by accident, or a plan fails and somehow works anyway
+      ('that worked?').
+    category: win
+    risk: low
+
+  - id: press-f
+    file: press-f.png  # drawn for Wabi Sanji, image
+    phrases: [press f, f in the chat]
+    about: Press F to pay respects. A death, a lost item or a failed run; the streamer says 'RIP'.
+    category: fail
+    risk: low
+
+  - id: surprised-pikachu
+    file: surprised-pikachu.jpg  # imgflip template, image
+    phrases: []
+    about: Surprised Pikachu. The streamer does the obvious dumb thing and is shocked by the obvious
+      result ('I didn't think it would...').
+    category: shock
+    risk: low
+
+  - id: this-is-fine
+    file: this-is-fine.jpg  # imgflip template, image
+    phrases: [this is fine, everything is fine]
+    about: 'Dog in a burning room. The streamer stays calm while everything is clearly going wrong:
+      low health, base on fire, the plan falling apart.'
+    category: fail
+    risk: low
+
+  - id: only-good-bug
+    file: only-good-bug.mp4  # Starship Troopers (1997), ytsearch, https://www.youtube.com/watch?v=vx-9il2Q5oQ, 2.8 s
+    caption: The only good bug is a dead bug!
+    phrases: [the only good bug is a dead bug, only good bugs are dead, good bug is a dead bug]
+    about: Starship Troopers trooper shouting 'the only good bug is a dead bug'. Fire when the streamer
+      is fighting bugs, spiders or insect enemies, or squashes one.
+    category: win
+    risk: high
+
+  - id: going-on-an-adventure
+    file: going-on-an-adventure.mp4  # https://www.youtube.com/watch?v=XgOt3gTUSQU, 2.3 s
+    phrases: [going on an adventure]
+    about: Bilbo running out of Bag End (The Hobbit). The streamer sets off on a long trip, a new quest
+      or a trek across the map.
+    category: win
+    risk: high
+
+  - id: nelson-haha
+    file: nelson-haha.mp4  # https://www.youtube.com/watch?v=TgDxL2e0iJw, 1.1 s
+    phrases: []
+    about: 'Nelson Muntz pointing and laughing ''Ha-ha!'' (The Simpsons). The streamer does something
+      stupid: walks into a trap, falls, misses an obvious thing, or chat laughs at him.'
+    category: fail
+    risk: high
+
+  - id: you-wouldnt-get-it
+    file: you-wouldnt-get-it.mp4  # https://www.youtube.com/watch?v=aBbwcHA0Jdg, 1.7 s
+    phrases: [what am i doing, how do i do this]
+    about: Joker (2019) 'You wouldn't get it'. The streamer is lost in a quest and has no idea what
+      to do or where to go.
+    category: awkward
+    risk: high
+
+  - id: alrighty-then
+    file: alrighty-then.mp4  # https://www.youtube.com/watch?v=0tJGk4ofc18, 2.3 s
+    phrases: [alrighty then]
+    about: Ace Ventura's 'Alrighty then!'. The streamer shrugs something weird off and moves on, or
+      wraps up an awkward moment.
+    category: awkward
+    risk: high
+
+  - id: like-a-glove
+    file: like-a-glove.mp4  # https://www.youtube.com/watch?v=oXYpo6CprCw, 1.8 s
+    phrases: [like a glove]
+    about: 'Ace Ventura''s ''Like a glove!''. Something fits or lands perfectly: a clean jump,
+      a building piece snapping in, gear that fits just right.'
+    category: win
+    risk: high
+
+  - id: ace-guano
+    file: ace-guano.mp4  # https://www.youtube.com/watch?v=aTkWgwKErhM, 1.1 s
+    phrases: [guano]
+    about: Ace Ventura (When Nature Calls) and the bat guano. The streamer finds bats or a bat cave,
+      or picks up guano.
+    category: awkward
+    risk: high
+
+  - id: five-ds
+    file: five-ds.mp4  # https://www.youtube.com/watch?v=xWvkxFBPXRQ, 4.4 s
+    phrases: [dodge duck dip dive]
+    about: Patches O'Houlihan's five Ds of dodgeball (Dodgeball, 2004). The streamer dodging attacks,
+      rolling away from a boss or scrambling out of a swarm.
+    category: chaos
+    risk: high
+
+  - id: dodge-a-wrench
+    file: dodge-a-wrench.mp4  # https://www.youtube.com/watch?v=5nGccOwcbtE, 3.2 s
+    phrases: [dodge a wrench]
+    about: Patches O'Houlihan throwing wrenches (Dodgeball). The streamer takes a hit he should have
+      dodged, or barely dodges something thrown.
+    category: fail
+    risk: high
+
+  - id: twss-michael
+    file: twss-michael.mp4  # https://www.youtube.com/watch?v=ngVzS0_sy0g, 1.3 s
+    phrases: [that's what she said, thats what she said]
+    about: 'Michael Scott saying ''That''s what she said'' (The Office). Alternate for thats-what-she-said:
+      an accidental innuendo from the streamer.'
+    category: innuendo
+    risk: high
+    family: false
+
+  - id: twss-michael-2
+    file: twss-michael-2.mp4  # https://www.youtube.com/watch?v=fi2UFFirLfE, 1.3 s
+    phrases: [that's what she said, thats what she said]
+    about: 'Another Michael Scott ''That''s what she said'' (The Office). Alternate for thats-what-she-said:
+      an accidental innuendo from the streamer.'
+    category: innuendo
+    risk: high
+    family: false
+
+  - id: big-bada-boom
+    file: big-bada-boom.mp4  # https://www.youtube.com/watch?v=Uwzg7SYZKF0, 2.1 s
+    phrases: [big bada boom]
+    about: Leeloo's 'Big bada boom' (The Fifth Element). An explosion, a big hit, a bomb or
+      a fire spell going off.
+    category: chaos
+    risk: high
+
+  - id: multipass
+    file: multipass.mp4  # https://www.youtube.com/watch?v=RdqiaNsKR2E, 0.9 s
+    phrases: [multipass]
+    about: Leeloo holding up her 'Multipass' (The Fifth Element). The streamer shows a key, a pass,
+      a ticket or ID, or gets let through somewhere.
+    category: win
+    risk: high
+
+  - id: its-working
+    file: its-working.mp4  # https://www.youtube.com/watch?v=_ElWlUr_tw8, 1.8 s
+    phrases: [it's working]
+    about: 'Young Anakin shouting ''It''s working! It''s working!'' (Star Wars Episode I). Something
+      the streamer has been fighting with finally works: a jump, a menu, a build, a setup.'
+    category: win
+    risk: high
+
+  - id: mr-beefy
+    file: mr-beefy.mp4  # 2.4 s
+    phrases: [call me mr beefy, say mr beefy]
+    about: 'Mr. Beefy the talking bulldog (Little Nicky, 2000): ''Say Mr. Beefy. Say it.'' The streamer
+      calls himself Mr. Beefy, gets a buff or a power-up, flexes, or a dog or bulldog shows
+      up.'
+    category: win
+    risk: high
+
+  - id: thanos-inevitable
+    file: thanos-inevitable.mp4  # https://www.youtube.com/watch?v=3bY0unjZ5Kw, 4.2 s
+    phrases: [i am inevitable]
+    about: 'Thanos (Avengers: Endgame): ''I am inevitable.'' The streamer is sure a win, a death or
+      a bad outcome is coming no matter what, or an enemy keeps coming back.'
+    category: chaos
+    risk: high
+
+  - id: thanos-balanced
+    file: thanos-balanced.mp4  # https://www.youtube.com/watch?v=lyRwsT9y_4I, 4.0 s
+    phrases: [perfectly balanced]
+    about: 'Thanos (Avengers: Infinity War): ''Perfectly balanced, as all things should be.''
+      the streamer splits loot or resources evenly, a stat build comes out even, or something ends up
+      exactly half and half.'
+    category: win
+    risk: high
+
+  - id: thanos-stones
+    file: thanos-stones.mp4  # https://www.youtube.com/watch?v=b3DRNLWM5kA, 3.2 s
+    phrases: [used the stones to destroy the stones]
+    about: 'Thanos (Avengers: Endgame): ''I used the stones to destroy the stones.'' The streamer uses
+      an item or tool to get rid of itself, or solves a problem with circular logic.'
+    category: awkward
+    risk: high
+
+  - id: pepe-silvia
+    file: pepe-silvia.mp4  # https://www.youtube.com/watch?v=peUe-82Qgs4, 2.9 s
+    phrases: [pepe silvia]
+    about: Charlie Day at the conspiracy board, 'Pepe Silvia' (It's Always Sunny in Philadelphia).
+      The streamer says he has a plan, works through a puzzle or a theory out loud, or connects clues
+      in a way that sounds unhinged.
+    category: chaos
+    risk: high
+
+  - id: only-hope
+    file: only-hope.mp4  # https://www.youtube.com/watch?v=5cc_h5Ghuj4, 3.7 s
+    phrases: [you're my only hope, help me obi-wan]
+    about: 'Princess Leia''s hologram (Star Wars: A New Hope): ''Help me, Obi-Wan Kenobi. You''re
+      my only hope.'' The streamer is desperate for help: asks ARIA or chat to bail him out, is stuck
+      on a puzzle, or begs a teammate or NPC.'
+    category: awkward
+    risk: high
+
+  - id: shrek-quest
+    file: shrek-quest.mp4  # https://www.youtube.com/watch?v=C_kbiXrS85M, 3.8 s
+    phrases: [already on a quest]
+    about: 'Shrek: ''I''m already on a quest.'' The streamer gets offered a new quest or side quest
+      while he''s in the middle of one, or the game hands him yet another objective.'
+    category: awkward
+    risk: high
+
+  - id: rectum-killed-him
+    file: rectum-killed-him.mp4  # https://www.youtube.com/watch?v=vYqpeRlyLOo, 5.1 s
+    phrases: [damn near killed him, rectum]
+    about: '''Rectum? Damn near killed him!'' Pun on ''wrecked him''. An enemy or the streamer gets
+      wrecked, a brutal hit, a huge crit, or someone barely survives.'
+    category: chaos
+    risk: high
+    family: false
+
+  - id: hes-dead-jim
+    file: hes-dead-jim.mp4  # https://www.youtube.com/watch?v=4D6z67SYxs8, 1.3 s
+    phrases: [he's dead jim, hes dead jim]
+    about: 'Dr McCoy (Star Trek): ''He''s dead, Jim.'' An enemy, NPC or party member goes down
+      for good, or the streamer confirms something is very dead.'
+    category: fail
+    risk: high
+
+  - id: and-my-axe
+    file: and-my-axe.mp4  # https://www.youtube.com/watch?v=Tl4j-U-a2PE, 1.9 s
+    phrases: [and my axe]
+    about: 'Gimli (The Lord of the Rings): ''And my axe!'' The streamer joins in with the party, signs
+      up for a fight, a teammate or viewer pledges to help, or he pulls out an axe.'
+    category: win
+    risk: high
+
+  - id: whats-a-battle
+    file: whats-a-battle.mp4  # https://www.youtube.com/watch?v=ONYJGGPBkgs, 1.5 s
+    phrases: [what's a battle, whats a battle]
+    about: 'Ralph Wiggum (The Simpsons): ''What''s a battle?'' A battle starts and the streamer has
+      no idea what''s going on, a new battle mechanic confuses him, or the game says battle
+      and he shrugs.'
+    category: awkward
+    risk: high
+
+  - id: punch-it-chewie
+    file: punch-it-chewie.mp4  # https://www.youtube.com/watch?v=IiN3zqinfAs, 7.5 s
+    phrases: [punch it chewy, punch it chewie, chewy punch it]
+    about: 'Han Solo (Star Wars): ''Punch it!'' to Chewie. The streamer floors it: boosts a ship or
+      car, makes a run for it, escapes, or jumps to the next area.'
+    category: chaos
+    risk: high
+
+  - id: great-success
+    file: great-success.mp4  # https://www.youtube.com/watch?v=r13riaRKGo0, 1.7 s
+    phrases: [great success]
+    about: 'Borat: ''Great success!'' The streamer pulls off a win, finishes a fight or a quest, or
+      something he tried actually works.'
+    category: win
+    risk: high
+
+  - id: awaken-anything
+    file: awaken-anything.mp4  # https://www.youtube.com/watch?v=ltK1fzRnQhQ, 12.0 s
+    phrases: [not awaken anything in me, doesn't awaken anything in me]
+    about: 'Dean Pelton (Community): ''I hope this doesn''t awaken anything in me.'' The streamer is
+      somewhere weird, flirty or odd and unsure how to feel about it, or something unexpectedly
+      stirs a feeling.'
+    category: awkward
+    risk: high
+    family: false
+
+  - id: sixteen
+    file: sixteen.mp4  # Nepenthez F1 2020 stream, https://www.youtube.com/watch?v=nwaU_R55UYA from 2.2s, cam crop, 1.8 s
+    phrases: ['16', sixteen, 16th, sixteenth]
+    about: Nepenthez laughing "...but a 16th!" after promising an easy top 3 in F1 2020 qualifying.
+      Real Civil Engineer's running number gag. Fire when the number 16 comes up (a position,
+      timer, damage number, price, level or count), or the streamer predicts a great result and finishes
+      badly.
+    category: numbers
+    risk: med
+    cooldown_s: 120
+
+  - id: power-of-christ
+    file: power-of-christ.mp4  # https://www.youtube.com/watch?v=X3JrD2G4Mdc, 1.9 s
+    phrases: [power of christ compels you, power of cross compels you]
+    about: 'Key & Peele''s Exorcist parody: ''The power of Christ compels you!'' The streamer
+      banishes or exorcises something: casts holy or light magic, uses a cross, holy water or
+      a Phoenix Down, fights a ghost, demon or undead, or wants a cursed enemy or glitch gone.'
+    category: chaos
+    risk: high
+
+  - id: wow-ding
+    file: wow-ding.mp3  # myinstants "wow level up", trimmed, 5.9 s
+    caption: Ding!
+    phrases: [ding]
+    about: World of Warcraft level-up sound. The streamer levels up, gets a skill or Vision level, or
+      says 'ding'.
+    category: win
+    risk: med
+    cooldown_s: 60
+
+  - id: doing-my-part
+    file: doing-my-part.mp4  # https://www.youtube.com/watch?v=iQFQCS-BeRk, 1.9 s
+    phrases: [i'm doing my part, im doing my part]
+    about: 'Starship Troopers trooper in the ranks: ''I''m doing my part!'' The streamer helps out: takes
+      a quest to help townsfolk, chips in on a fight, pitches in on a team effort, or does a
+      small job for the cause.'
+    category: win
+    risk: high
+
+  - id: phrasing
+    file: phrasing.mp4  # FX GIPHY 5ROlkuRjBdWKRGTYTy + myinstants "archer phrasing" sound, 1.5 s
+    phrases: [phrasing]
+    about: 'Archer shouting ''Phrasing!''. A line in the game or from the streamer sounds like an accidental
+      innuendo, usually NPC dialogue: ''resupport a ho'', ''mount up'', ''it''s so hard''. Alternative
+      to thats-what-she-said when the line is someone else''s.'
+    category: innuendo
+    risk: high
+    family: false
+
+  - id: somebody-stop-me
+    file: somebody-stop-me.mp4  # https://www.youtube.com/watch?v=jJLlGmXKvyo, 2.6 s
+    phrases: [somebody stop me]
+    about: 'The Mask (Jim Carrey): ''Somebody stop me!'' The streamer is on a roll and getting carried
+      away: a damage spree, a shopping spree, spamming an ability, or gleefully doing something
+      reckless.'
+    category: chaos
+    risk: high
+
+  - id: smokin
+    file: smokin.mp4  # https://www.youtube.com/watch?v=0QZdEdkTHW8 1.8-4.9s, 3.1 s
+    phrases: [smokin, ssssmokin]
+    about: "The Mask (Jim Carrey): 'Ssssmokin'!' Something looks hot or impressive: a cool outfit
+      or new gear, a stylish move, a fire spell, or the streamer pulls off something slick."
+    category: win
+    risk: high
+
+  - id: sixty-percent
+    file: sixty-percent.mp4  # https://www.youtube.com/watch?v=k8djas5pIvk, 4.3 s
+    phrases: [of the time it works every time, percent of the time every time, of the time every
+        time]
+    about: 'Anchorman (Brian Fantana): ''60% of the time, it works every time.'' The streamer trusts
+      a dodgy strategy, his gut or a half-working trick, or quotes made-up odds with total confidence.'
+    category: awkward
+    risk: high
+
+  - id: up-and-at-them
+    file: up-and-at-them.mp4  # https://www.youtube.com/watch?v=hDJ5Hljz2e8, 2.2 s
+    phrases: [up and at them, up and at em, up and adam, opened at them]
+    about: 'The Simpsons: ''Up and at them!'' The streamer rallies to get going: starts a fight, heads
+      out on the next mission, gets the party moving, or pushes on after a break.'
+    category: chaos
+    risk: high
+
+  - id: snake-snake
+    file: snake-snake.mp4  # https://www.youtube.com/watch?v=wrbesd6l-eA from 4.9s (MGS1 game over), 7.1 s
+    phrases: [snake snake snake, snaaake]
+    about: 'Metal Gear Solid game over screen: "Answer me! Snake? Snake?!" The streamer dies, gets a game over,
+      or a party member goes down; also when the streamer yells someone''s name in panic.'
+    category: fail
+    risk: med
+
+  - id: kept-you-waiting
+    file: kept-you-waiting.mp4  # https://www.youtube.com/watch?v=kOcXBo0wG_Y (MGSV gameplay), 2.2 s
+    phrases: [kept you waiting huh, kept you waiting]
+    about: 'Metal Gear Solid, Snake: ''Kept you waiting, huh?'' The streamer is back from a break, finally
+      returns to a game or quest, shows up late, or a long-awaited thing arrives.'
+    category: greeting
+    risk: med
+
+  - id: roger-roger
+    file: roger-roger.mp4  # https://www.youtube.com/watch?v=hbfg1EGRSbE, 2.4 s
+    phrases: [roger roger]
+    about: 'Star Wars (The Clone Wars) battle droid: ''Roger roger.'' The streamer acknowledges an order or
+      a plan, agrees to do something, or a teammate, NPC or chat gives him instructions.'
+    category: win
+    risk: high
+
+  - id: shia-magic
+    file: shia-magic.mp4  # https://www.youtube.com/watch?v=f06IoIQ6Mlg (SNL, Shia LaBeouf as Doug Henning) + burned-in MAGIC caption, 3.5 s
+    phrases: [it's magic, its magic, pure magic, just magic, magic baby]
+    about: "Shia LaBeouf's hand-wave 'MAGIC' (SNL). Something works with no explanation, a spell
+      pulls off something wild, or the streamer waves away how he did it. Not on every 'magic attack'."
+    category: win
+    risk: high
+    cooldown_s: 600

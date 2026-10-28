@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Your settings and secrets
+.env
+.env.*
+!.env.example
+client_secret*.json
+*.token.json
+*.pickle
+apps/screenshot-parser/config.yaml
+
+# Capture log, transcripts, live state
+apps/screenshot-parser/data/
+
+# Fonts downloaded on demand
+tools/stream-pipeline/src/wabisanji_post/fonts/*.otf
+
+*.log
+Thumbs.db
+.DS_Store
+
+# Claude Code local settings
+.claude/settings.local.json

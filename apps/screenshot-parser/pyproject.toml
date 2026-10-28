@@ -1,0 +1,42 @@
+[project]
+name = "wabisanji-parser"
+version = "0.1.0"
+description = "Parse Japanese text from game screenshots and export vocabulary to Anki"
+requires-python = ">=3.11"
+dependencies = [
+    "pillow>=10.0",
+    "opencv-python>=4.9",
+    "numpy>=1.26",
+    "watchdog>=4.0",
+    "pyyaml>=6.0",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+# manga-ocr pulls in PyTorch (~1GB model on first run). Without it, the
+# parser falls back to Ollama-vision-only analysis.
+ocr = ["manga-ocr>=0.1.11"]
+# `wabisanji serve` / `stream`: overlay + JSON API on :8770.
+stream = ["fastapi>=0.110", "uvicorn>=0.29", "websockets>=12"]
+listen = [
+    "faster-whisper>=1.1",
+    "sounddevice>=0.4",
+    "websockets>=12",
+]
+
+[dependency-groups]
+# httpx2 backs FastAPI's TestClient
+dev = ["pytest>=8.0", "httpx2>=2.13"]
+
+[project.scripts]
+wabisanji = "wabisanji.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wabisanji"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
